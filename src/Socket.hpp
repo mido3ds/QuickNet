@@ -13,7 +13,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-enum Protocol
+enum SocketType
 {
     TCP,
     UDP,
@@ -33,8 +33,8 @@ using FileDescriptor = int;
 class Socket
 {
 public:
-    Socket(std::string host, std::string service, Protocol protocol=TCP, SocketUse use=toConnect);
-    Socket(std::string portNumber, Protocol protocol=TCP, SocketUse use=toConnect);
+    Socket(std::string host, std::string service, SocketType type=TCP, SocketUse use=toConnect);
+    Socket(std::string portNumber, SocketType type=TCP, SocketUse use=toConnect);
     ~Socket();
 
     void Listen(int maxNumberOfCon);
@@ -49,10 +49,10 @@ public:
 private:
     FileDescriptor fd = -1;
     bool isConnected = false;
-    const Protocol protocol;
+    const SocketType type;
     const SocketUse use;
 
-    Socket(FileDescriptor fd, Protocol protocol, SocketUse use);
+    Socket(FileDescriptor fd, SocketType type, SocketUse use);
     addrinfo *GetAddrInfo(std::string host, std::string service) const;
     FileDescriptor GetAndConnectFD(addrinfo* res) const;
 };

@@ -5,8 +5,8 @@ using std::exception;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Socket::Socket(string host, string service, Protocol protocol, SocketUse use)
-    :protocol(protocol), use(use)
+Socket::Socket(string host, string service, SocketType type, SocketUse use)
+    :type(type), use(use)
 {
     addrinfo *res = GetAddrInfo(host, service);
     assert(res != nullptr);
@@ -18,13 +18,13 @@ Socket::Socket(string host, string service, Protocol protocol, SocketUse use)
     isConnected = true;
 }
 
-Socket::Socket(string portNumber, Protocol protocol, SocketUse use)
-    :Socket("", portNumber, protocol, use)
+Socket::Socket(string portNumber, SocketType type, SocketUse use)
+    :Socket("", portNumber, type, use)
 {}
 
 // private constructor
-Socket::Socket(FileDescriptor fd, Protocol protocol, SocketUse use)
-    :fd(fd), protocol(protocol), use(use)
+Socket::Socket(FileDescriptor fd, SocketType type, SocketUse use)
+    :fd(fd), type(type), use(use)
 {}
 
 Socket::~Socket()
@@ -58,7 +58,7 @@ Socket Socket::Accept()
     if (new_fd < 0)
         throw exception();  // TODO
 
-    return Socket(new_fd, protocol, toServe);
+    return Socket(new_fd, type, toServe);
 }
 
 void Socket::Send(string toSend)
@@ -96,7 +96,7 @@ addrinfo* Socket::GetAddrInfo(string host, string service) const
     memset(&hints, 0, sizeof(addrinfo));
     hints.ai_flags = (use == toBind) ? AI_PASSIVE : 0;
     hints.ai_family = PF_UNSPEC;
-    switch (protocol)
+    switch (type)
     {
         case TCP:
             hints.ai_socktype = SOCK_STREAM;
