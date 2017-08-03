@@ -14,8 +14,10 @@ Socket::Socket(string host, string service, SocketType type, SocketUse use)
     fd = GetAndConnectFD(res);
     assert(fd != -1);
 
-    freeaddrinfo(res);
     isConnected = true;
+    GetPeer(peer, peerLen);
+
+    freeaddrinfo(res);
 }
 
 Socket::Socket(string portNumber, SocketType type, SocketUse use)
@@ -25,7 +27,9 @@ Socket::Socket(string portNumber, SocketType type, SocketUse use)
 // private constructor
 Socket::Socket(FileDescriptor fd, SocketType type, SocketUse use)
     :fd(fd), type(type), use(use)
-{}
+{
+    GetPeer(peer, peerLen);
+}
 
 Socket::~Socket()
 {
@@ -63,12 +67,73 @@ Socket Socket::Accept()
 
 void Socket::Send(string toSend)
 {
-    // TODO
+    int bytesSent = 0,
+        allBytes = toSend.size()+1,
+        flags = 0, n;
+    char* buffer = (char*) toSend.c_str();
+
+    while (bytesSent < allBytes)
+    {
+        n = sendto(fd, buffer+bytesSent, allBytes-bytesSent, flags, (sockaddr*)peer, peerLen);
+
+        if (n == -1)
+            throw exception(); // TODO
+
+        bytesSent += n;
+    }
+
+    assert(bytesSent == allBytes);
 }
 
-string Socket::Receive()
+string Socket::Receive(const int timeOut, const int chunkSize)
 {
-    // TODO
+    /* Copied from 'http://www.binarytides.com/receive-full-data-with-recv-socket-function-in-c/'
+    with my own edits */
+
+    int sizeRecvd = 0, 
+        totalSize = 0, 
+        flags = MSG_DONTWAIT;
+    char chunk[chunkSize];
+    double timeDiff;
+
+    timeval begin, now;
+    gettimeofday(&begin , NULL);
+        
+    while (true)
+    {
+        gettimeofday(&now , NULL);
+        // time elapsed in seconds
+        timeDiff = (now.tv_sec - begin.tv_sec) + 1e-6 * (now.tv_usec - begin.tv_usec);
+        
+        // if you got some data, then break after timeout
+        if (totalSize > 0 && timeDiff > timeOut)
+            break;
+            
+        // if you got no data at all, wait a little longer, 1.5 the timeout
+        else if (timeDiff > timeOut*1.5)
+            break;
+        
+        memset(chunk, 0, chunkSize); 
+
+        // received successfully
+        if ((sizeRecvd = recvfrom(fd, chunk, chunkSize-1, flags, (sockaddr*)peer, &peerLen)) > 0)
+            totalSize += sizeRecvd;
+        // connection closed [only TCP]
+        else if (sizeRecvd == 0 && type == TCP)
+        {
+            Close();
+            break;
+        }
+        // received nothing, wait [0.1 seconds] before trying again
+        else
+            usleep(100000);
+    }
+
+    // cut the chunk
+    assert(totalSize+1 <= chunkSize);
+    chunk[totalSize+1] = '\0';
+    
+    return string(chunk);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -77,6 +142,7 @@ void Socket::Close()
 {
     close(fd);
     fd = -1;
+    peer = nullptr;
     isConnected = false;
 }
 
@@ -167,3 +233,16 @@ FileDescriptor Socket::GetAndConnectFD(addrinfo* res) const
     assert(sfd > 0);
     return sfd;
 }
+
+void Socket::GetPeer(sockaddr_storage* &other, socklen_t &len) const
+{
+    other = nullptr;
+    len = sizeof (sockaddr_storage);
+
+    if (getpeername(fd, (sockaddr*)other, &len) != 0) 
+        throw exception(); // TODO
+
+    assert(other != nullptr);
+}
+
+////////////////////////////////////////////////////////////////////////////////

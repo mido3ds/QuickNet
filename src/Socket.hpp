@@ -12,6 +12,7 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <sys/time.h>
 
 enum SocketType
 {
@@ -41,20 +42,24 @@ public:
     Socket Accept();
 
     void Send(std::string toSend);
-    std::string Receive();
+    std::string Receive(const int timeOut, const int chunkSize=512);
 
     void Close();
     bool IsConnected();
 
-private:
-    FileDescriptor fd = -1;
-    bool isConnected = false;
     const SocketType type;
     const SocketUse use;
 
+private:
+    FileDescriptor fd = -1;
+    bool isConnected = false;
+    sockaddr_storage* peer = nullptr;
+    socklen_t peerLen;
+
     Socket(FileDescriptor fd, SocketType type, SocketUse use);
-    addrinfo *GetAddrInfo(std::string host, std::string service) const;
+    addrinfo* GetAddrInfo(std::string host, std::string service) const;
     FileDescriptor GetAndConnectFD(addrinfo* res) const;
+    void GetPeer(sockaddr_storage* &other, socklen_t &len) const;
 };
 
 #endif  /* __Socket_hpp__ */
