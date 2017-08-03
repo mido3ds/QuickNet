@@ -72,6 +72,9 @@ void Socket::Send(string toSend)
         flags = 0, n;
     char* buffer = (char*) toSend.c_str();
 
+    if (!isConnected) 
+        throw exception(); // TODO
+
     while (bytesSent < allBytes)
     {
         n = sendto(fd, buffer+bytesSent, allBytes-bytesSent, flags, (sockaddr*)peer, peerLen);
@@ -146,10 +149,10 @@ void Socket::Close()
     isConnected = false;
 }
 
-bool Socket::IsConnected()
+bool Socket::IsConnected() const 
 {
     if (isConnected) assert(fd != -1);
-
+    
     return isConnected;
 }
 

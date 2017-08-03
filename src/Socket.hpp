@@ -45,7 +45,7 @@ public:
     std::string Receive(const int timeOut, const int chunkSize=512);
 
     void Close();
-    bool IsConnected();
+    bool IsConnected(); const
 
     const SocketType type;
     const SocketUse use;
