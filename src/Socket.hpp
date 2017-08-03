@@ -3,6 +3,7 @@
 
 #include <string>
 #include <exception>
+#include <cassert>
 
 #include <netdb.h>
 #include <stdio.h>

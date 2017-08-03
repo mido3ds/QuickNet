@@ -9,9 +9,12 @@ Socket::Socket(string host, string service, Protocol protocol, SocketUse use)
     :protocol(protocol), use(use)
 {
     addrinfo *res = GetAddrInfo(host, service);
-    fd = GetAndConnectFD(res);
-    freeaddrinfo(res);
+    assert(res != nullptr);
 
+    fd = GetAndConnectFD(res);
+    assert(fd != -1);
+
+    freeaddrinfo(res);
     isConnected = true;
 }
 
@@ -34,6 +37,8 @@ Socket::~Socket()
 
 void Socket::Listen(int maxNumberOfCon)
 {
+    assert(maxNumberOfCon > 0);
+
     if (use != toBind)
         throw exception(); // TODO
 
@@ -71,10 +76,14 @@ string Socket::Receive()
 void Socket::Close()
 {
     close(fd);
+    fd = -1;
+    isConnected = false;
 }
 
 bool Socket::IsConnected()
 {
+    if (isConnected) assert(fd != -1);
+
     return isConnected;
 }
 
@@ -85,9 +94,9 @@ addrinfo* Socket::GetAddrInfo(string host, string service) const
     addrinfo hints, *res = nullptr;
 
     memset(&hints, 0, sizeof(addrinfo));
-    hints.ai_flags = this->use == toBind ? AI_PASSIVE : 0;
+    hints.ai_flags = (use == toBind) ? AI_PASSIVE : 0;
     hints.ai_family = PF_UNSPEC;
-    switch (this->protocol)
+    switch (protocol)
     {
         case TCP:
             hints.ai_socktype = SOCK_STREAM;
@@ -106,7 +115,7 @@ addrinfo* Socket::GetAddrInfo(string host, string service) const
             hints.ai_protocol = 0;
             break;
         default:
-            break;
+            throw exception(); // TODO
     }
 
     const char *host_c_string = host.c_str(),
@@ -123,6 +132,7 @@ addrinfo* Socket::GetAddrInfo(string host, string service) const
     if (stats != 0)
         throw exception(); // TODO
 
+    assert(res != nullptr);
     return res;
 }
 
@@ -154,5 +164,6 @@ FileDescriptor Socket::GetAndConnectFD(addrinfo* res) const
     if (p == nullptr)
         throw exception(); // TODO
 
+    assert(sfd > 0);
     return sfd;
 }
