@@ -65,19 +65,18 @@ Socket Socket::Accept()
     return Socket(new_fd, type, toServe);
 }
 
-void Socket::Send(string toSend)
+void Socket::Send(const void* toSend, const int size)
 {
     int bytesSent = 0,
-        allBytes = toSend.size()+1,
         flags = 0, n;
-    char* buffer = (char*) toSend.c_str();
+    char* buffer = (char *) toSend;
 
     if (!isConnected) 
         throw exception(); // TODO
 
-    while (bytesSent < allBytes)
+    while (bytesSent < size)
     {
-        n = sendto(fd, buffer+bytesSent, allBytes-bytesSent, flags, (sockaddr*)peer, peerLen);
+        n = sendto(fd, buffer+bytesSent, size-bytesSent, flags, (sockaddr*)peer, peerLen);
 
         if (n == -1)
             throw exception(); // TODO
@@ -85,7 +84,12 @@ void Socket::Send(string toSend)
         bytesSent += n;
     }
 
-    assert(bytesSent == allBytes);
+    assert(bytesSent == size);
+}
+
+void Socket::Send(string toSend)
+{
+    Send((void*) toSend.c_str(), toSend.size() + 1);
 }
 
 string Socket::Receive(const int timeOut, const int chunkSize)

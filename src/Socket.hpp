@@ -42,10 +42,11 @@ public:
     Socket Accept();
 
     void Send(std::string toSend);
+    void Send(const void* buffer, const int size);
     std::string Receive(const int timeOut, const int chunkSize=512);
 
     void Close();
-    bool IsConnected(); const
+    bool IsConnected() const;
 
     const SocketType type;
     const SocketUse use;
