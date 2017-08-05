@@ -3,10 +3,8 @@ CPP_VER = 11
 CC_FLAGS = -g
 CC_FLAGS += -std=c++$(CPP_VER)
 CC_FLAGS += -c
-CC_FLAGS += -I $(HEADER)
 
-HEADER = src/
-SOURCE = src/*.cpp
+SOURCE = src/*.cpp src/http/*.cpp
 EXEC = exec.out
 
 compile: 
