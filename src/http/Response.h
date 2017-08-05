@@ -12,8 +12,6 @@
 namespace http
 {
 
-using Fields = std::unordered_map<std::string, std::string>;
-
 class Response
 {
 public:
@@ -23,6 +21,7 @@ public:
     );
     static Response Parse(const std::string& toParse);
 
+    std::string ConstructString();
     static bool IsValid(const std::string& toParse);
 
     const std::string version,

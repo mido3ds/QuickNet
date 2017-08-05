@@ -32,15 +32,18 @@ Response Response::Parse(const string& toParse)
     if (!TryMatch(toParse, results, failure_description)) 
         throw exception(); // TODO
 
-    // auto &method = results[METHOD_INDEX],
-    //        &uri = results[URI_INDEX],
-    //        &ver = results[VER_INDEX],
-    //        &message = results[MSG_INDEX];
-    // Fields fs = ParseFields(results[FIELD_INDEX]);
+    auto &version = results[VER_INDEX],
+        &statusCode = results[STATUS_INDEX],                   
+        &reasonPhrase = results[REASON_INDEX],
+        &message = results[MSG_INDEX];
+    Fields fs = ParseFields(results[FIELD_INDEX]);
 
-    // return Response(StringToMethod(method), uri, ver, message, fs);
+    return Response(version, statusCode, reasonPhrase, message, fs);
+}
 
-    // TODO
+string Response::ConstructString()
+{
+
 }
 
 bool Response::IsValid(const string& toParse)

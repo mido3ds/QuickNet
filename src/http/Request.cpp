@@ -36,6 +36,11 @@ Request Request::Parse(const string& toParse)
     return Request(StringToMethod(method), uri, ver, message, fs);
 }
 
+string Request::ConstructString()
+{
+
+}
+
 bool Request::IsValid(const string& toParse)
 {
     smatch temp_results;
