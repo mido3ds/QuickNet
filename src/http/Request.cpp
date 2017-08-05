@@ -11,10 +11,6 @@ const std::regex Request::bodyRegEx(
     "(GET|HEAD|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE) +(\\S+) +HTTP\\/(\\d.\\d) *\\r\\n((?:(?:\\S*): +(?:.*) *\\r\\n)*)? *(?:\\n\\r\\n([\\S\\n\\t]*)\\r\\n)?\\r\\n",
     std::regex_constants::optimize
 ); 
-const std::regex Request::fieldsRegEx(
-    "(\\S*): +(.*)",
-    std::regex_constants::optimize
-);
 
 Request::Request(const Method& method, const string& uri, const string& version, const string& message, const Fields& fields)
     :method(method), uri(uri), version(version), message(message), fields(fields)
@@ -55,21 +51,21 @@ inline bool Request::TryMatch(const string& toParse, smatch& matchResults, strin
         return false;
     }
 
-    const string& method = matchResults[1];
+    const string& method = matchResults[METHOD_INDEX];
     if (!IsValidMethod(method)) 
     {
         failureReason = "Method is not supported";
         return false;
     }
 
-    const string& uri = matchResults[2];
+    const string& uri = matchResults[URI_INDEX];
     if (uri.size() == 0)
     {
         failureReason = "No given URI";
         return false;
     }
 
-    const string& version = matchResults[3];
+    const string& version = matchResults[VER_INDEX];
     if (version != "1.1" && version != "1.0")
     {
         failureReason = "Not supported version of http";

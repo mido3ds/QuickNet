@@ -12,6 +12,7 @@ namespace http
 
 using std::cmatch;
 using std::regex_match;
+using std::regex;
 using std::string;
 using std::exception;
 
@@ -19,6 +20,11 @@ using Fields = std::unordered_map<std::string, std::string>;
 
 inline Fields ParseFields(const string& str)
 {
+    static const regex fieldsRegEx(
+        "(\\S*): +(.*)", 
+        std::regex_constants::optimize
+    );
+
     cmatch results;
     Fields fs;
     char* cstr = new char[str.size() + 1];

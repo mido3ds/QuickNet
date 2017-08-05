@@ -1,6 +1,14 @@
 #ifndef __http_Response_h__
 #define __http_Response_h__
 
+#include <regex>
+#include <string>
+#include <unordered_map>
+#include <exception>
+#include <cstring>
+
+#include "Fields.h"
+
 namespace http
 {
 
@@ -10,25 +18,22 @@ class Response
 {
 public:
     Response(
-        const Method& method, const std::string& uri,  
-        const std::string& version, const std::string& message, 
-        const Fields& fields
+        const string& version, const string& statusCode,
+        const string& reasonPhrase, const string& message, const Fields& fields
     );
     static Response Parse(const std::string& toParse);
 
     static bool IsValid(const std::string& toParse);
 
-    const Method method;
-    const std::string uri,
-                      version,
+    const std::string version,
+                      statusCode,                   
+                      reasonPhrase,
                       message;
     const Fields fields;
 private:
     static const std::regex bodyRegEx;
-    static const std::regex fieldsRegEx;
-    enum RegExIndices {ALL, METHOD_INDEX, URI_INDEX, VER_INDEX, FIELD_INDEX, MSG_INDEX};
+    enum RegExIndices {ALL, VER_INDEX, STATUS_INDEX, REASON_INDEX, FIELD_INDEX, MSG_INDEX};
 
-    static inline Fields ParseFields(const std::string& str);
     static inline bool TryMatch(const std::string& toParse, std::smatch& results, std::string& failureReason);
 };
 

@@ -32,7 +32,6 @@ public:
     const Fields fields;
 private:
     static const std::regex bodyRegEx;
-    static const std::regex fieldsRegEx;
     enum RegExIndices {ALL, METHOD_INDEX, URI_INDEX, VER_INDEX, FIELD_INDEX, MSG_INDEX};
 
     static inline bool TryMatch(const std::string& toParse, std::smatch& results, std::string& failureReason);
