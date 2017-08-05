@@ -1,4 +1,4 @@
-#include "Request.hpp"
+#include "Request.h"
 
 using namespace http;
 using std::smatch;
@@ -77,22 +77,4 @@ inline bool Request::TryMatch(const string& toParse, smatch& matchResults, strin
     }
 
     return true;
-}
-
-inline Fields Request::ParseFields(const string& str)
-{
-    cmatch results;
-    Fields fs;
-    char* cstr = new char[str.size() + 1];
-    strcpy(cstr, str.c_str());
-
-    for (cstr = strtok (cstr, "\r\n"); cstr != nullptr; cstr = strtok (cstr, "\r\n"))
-    {
-        if (!regex_match(cstr, results, fieldsRegEx))
-            throw exception(); // TODO
-
-        fs[results[1]] = results[2];
-    }
-
-    return fs;
 }

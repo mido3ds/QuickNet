@@ -1,5 +1,5 @@
-#ifndef __http_Methods_hpp__
-#define __http_Methods_hpp__
+#ifndef __http_Methods_h__
+#define __http_Methods_h__
 
 #include <string>
 #include <exception>
@@ -53,4 +53,4 @@ inline bool IsValidMethod(const std::string& input)
 }
 }
 
-#endif  /* __http_Methods_hpp__ */
+#endif  /* __http_Methods_h__ */

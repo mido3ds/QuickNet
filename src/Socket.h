@@ -1,5 +1,5 @@
-#ifndef __Socket_hpp__
-#define __Socket_hpp__
+#ifndef __Socket_h__
+#define __Socket_h__
 
 #include <string>
 #include <exception>
@@ -63,4 +63,4 @@ private:
     void GetPeer(sockaddr_storage* &other, socklen_t &len) const;
 };
 
-#endif  /* __Socket_hpp__ */
+#endif  /* __Socket_h__ */
