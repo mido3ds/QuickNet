@@ -8,7 +8,7 @@ using std::string;
 using std::exception;
 
 const std::regex Request::bodyRegEx(
-    "(GET|HEAD|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE) +(\\S+) +HTTP\\/(\\d.\\d) *\\r\\n((?:(?:\\S*): +(?:.*) *\\r\\n)*)? *(?:\\n\\r\\n([\\S\\n\\t]*)\\r\\n)?\\r\\n",
+    "(GET|HEAD|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE) +(\\S+) +HTTP\\/(\\d.\\d) *\\r\\n((?:(?:\\S*): +(?:.*) *\\r\\n)*)? *(?:\\n\\r\\n([\\s\\S\\n\\t]*)\\r\\n)?\\r\\n",
     std::regex_constants::optimize
 ); 
 
@@ -38,7 +38,17 @@ Request Request::Parse(const string& toParse)
 
 string Request::ConstructString()
 {
+    const char *CRLF = "\r\n", 
+                *SP = " ";
 
+    string newString = method + SP + uri + SP + "HTTP/" + version + CRLF;
+    for (auto& pair:fields)
+        newString += pair.first + ": " + pair.second + CRLF;
+    if (message != "")
+        newString += '\n' + message + CRLF;
+    newString += CRLF;
+
+    return newString;
 }
 
 bool Request::IsValid(const string& toParse)

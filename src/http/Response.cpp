@@ -10,7 +10,7 @@ using std::string;
 using std::exception;
 
 const std::regex Response::bodyRegEx(
-    "(GET|HEAD|POST|PUT|DELETE|CONNECT|OPTIONS|TRACE) +(\\S+) +HTTP\\/(\\d.\\d) *\\r\\n((?:(?:\\S*): +(?:.*) *\\r\\n)*)? *(?:\\n\\r\\n([\\S\\n\\t]*)\\r\\n)?\\r\\n", // TODO
+    "HTTP\\/(\\d.\\d) +([1-5]\\d\\d) +(.*) *\\r\\n((?:(?:\\S*): +(?:.*) *\\r\\n)*)? *(?:\\n\\r\\n([\\s\\S\\n\\t]*)\\r\\n)?\\r\\n", 
     std::regex_constants::optimize
 ); 
 
@@ -43,7 +43,17 @@ Response Response::Parse(const string& toParse)
 
 string Response::ConstructString()
 {
-    
+    const char *CRLF = "\r\n", 
+                *SP = " ";
+
+    string newString = "HTTP/" + version + SP + statusCode + reasonPhrase + CRLF;
+    for (auto& pair:fields)
+        newString += pair.first + ": " + pair.second + CRLF;
+    if (message != "")
+        newString += '\n' + message + CRLF;
+    newString += CRLF;
+
+    return newString;
 }
 
 bool Response::IsValid(const string& toParse)
@@ -61,6 +71,12 @@ inline bool Response::TryMatch(const string& toParse, smatch& matchResults, stri
         return false;
     }
 
-    // TODO
+    const string& version = matchResults[VER_INDEX];
+    if (version != "1.1" && version != "1.0")
+    {
+        failureReason = "Not supported version of http";
+        return false;
+    }
+
     return true;
 }
