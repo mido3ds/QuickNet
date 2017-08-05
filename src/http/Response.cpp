@@ -43,7 +43,7 @@ Response Response::Parse(const string& toParse)
 
 string Response::ConstructString()
 {
-
+    
 }
 
 bool Response::IsValid(const string& toParse)

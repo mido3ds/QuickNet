@@ -56,13 +56,6 @@ inline bool Request::TryMatch(const string& toParse, smatch& matchResults, strin
         return false;
     }
 
-    const string& method = matchResults[METHOD_INDEX];
-    if (!IsValidMethod(method)) 
-    {
-        failureReason = "Method is not supported";
-        return false;
-    }
-
     const string& uri = matchResults[URI_INDEX];
     if (uri.size() == 0)
     {
