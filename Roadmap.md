@@ -11,7 +11,7 @@
 [ ] Phase 2:
     
     [ ] Socket classes
-        [ ] make copy constructors
+        [X] make copy constructors
         [ ] be able to reset port (use it again)     
         [ ] testing:
             [ ] accept and listen work properly 

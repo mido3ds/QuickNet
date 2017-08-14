@@ -36,6 +36,7 @@ class Socket
 public:
     Socket(std::string host, std::string service, SocketType type=TCP, SocketUse use=toConnect);
     Socket(std::string portNumber, SocketType type=TCP, SocketUse use=toConnect);
+    Socket(const Socket&);
     ~Socket();
 
     void Listen(int maxNumberOfCon);

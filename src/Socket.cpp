@@ -31,6 +31,10 @@ Socket::Socket(FileDescriptor fd, SocketType type, SocketUse use)
     GetPeer(peer, peerLen);
 }
 
+Socket::Socket(const Socket& s)
+    :fd(s.fd), isConnected(s.isConnected), peer(s.peer), peerLen(s.peerLen), type(s.type), use(s.use)
+{}
+
 Socket::~Socket()
 {
     if (fd != -1)
