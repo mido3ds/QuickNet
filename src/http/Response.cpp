@@ -41,7 +41,7 @@ Response Response::Parse(const string& toParse)
     return Response(version, statusCode, reasonPhrase, message, fs);
 }
 
-string Response::ConstructString()
+string Response::ConstructString() const
 {
     const char *CRLF = "\r\n", 
                 *SP = " ";

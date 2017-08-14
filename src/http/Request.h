@@ -23,7 +23,7 @@ public:
     );
     static Request Parse(const std::string& toParse);
 
-    std::string ConstructString();
+    std::string ConstructString() const;
     static bool IsValid(const std::string& toParse);
 
     const Method method;

@@ -21,7 +21,7 @@ public:
     );
     static Response Parse(const std::string& toParse);
 
-    std::string ConstructString();
+    std::string ConstructString() const;
     static bool IsValid(const std::string& toParse);
 
     const std::string version,

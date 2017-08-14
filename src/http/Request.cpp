@@ -36,7 +36,7 @@ Request Request::Parse(const string& toParse)
     return Request(StringToMethod(method), uri, ver, message, fs);
 }
 
-string Request::ConstructString()
+string Request::ConstructString() const
 {
     const char *CRLF = "\r\n", 
                 *SP = " ";

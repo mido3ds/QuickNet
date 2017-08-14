@@ -58,12 +58,14 @@ Request Server::ReceiveRequest()
     throw exception();  // TODO
 }
 
-Response Server::HandleRequest(const Request&) const
+Response Server::HandleRequest(const Request& req) const
 {
     // TODO
 }
 
-void Server::SendResponse(const Response&)
+void Server::SendResponse(const Response& res)
 {
-    // TODO
+    clientSocket.Send(res.ConstructString());
+    
+    // TODO: handle exceptions
 }
