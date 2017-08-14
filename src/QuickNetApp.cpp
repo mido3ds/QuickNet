@@ -45,16 +45,3 @@ void QuickNetApp::Run() noexcept
 }
 
 ///////////////////////////////////////////////////////////////////////////
-
-void QuickNetApp::AssignRoute(const string& route, const RouteListener& listener)
-{
-    if (RouteIsAssigned(route))
-        throw exception(); // TODO
-
-    routes[route] = listener;
-}
-
-bool QuickNetApp::RouteIsAssigned(const string& route) 
-{
-    return routes.find(route) != routes.end();
-}
