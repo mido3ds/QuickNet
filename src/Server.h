@@ -26,10 +26,10 @@ private:
     RoutesMap routes;
     Socket clientSocket;
 
-    bool RouteIsAssigned(const std::string& route);
-    http::Request ReceiveRequest();
-    http::Response HandleRequest(const http::Request&) const;
-    void SendResponse(const http::Response&);
+    inline bool RouteIsAssigned(const std::string& route);
+    inline http::Request ReceiveRequest();
+    inline http::Response HandleRequest(const http::Request&) const;
+    inline void SendResponse(const http::Response&);
 };
 
 #endif  /* __Server_h__ */

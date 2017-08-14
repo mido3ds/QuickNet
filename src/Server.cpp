@@ -30,14 +30,14 @@ void Server::AssignRoute(const std::string& route, const RouteListener& listener
 
 /////////////////////////////////////////////////////////////////
 
-bool Server::RouteIsAssigned(const std::string& route)
+inline bool Server::RouteIsAssigned(const std::string& route)
 {
     return routes.find(route) != routes.end();
 }
 
 /////////////////////////////////////////////////////////////////
 
-Request Server::ReceiveRequest()
+inline Request Server::ReceiveRequest()
 {
     string str, temp;
     const int timeOut = 2;
@@ -58,12 +58,12 @@ Request Server::ReceiveRequest()
     throw exception();  // TODO
 }
 
-Response Server::HandleRequest(const Request& req) const
+inline Response Server::HandleRequest(const Request& req) const
 {
     // TODO
 }
 
-void Server::SendResponse(const Response& res)
+inline void Server::SendResponse(const Response& res)
 {
     clientSocket.Send(res.ConstructString());
     
