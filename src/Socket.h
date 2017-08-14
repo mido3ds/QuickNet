@@ -44,7 +44,7 @@ public:
 
     void Send(std::string toSend);
     void Send(const void* buffer, const int size);
-    std::string Receive(const int timeOut, const int chunkSize=512);
+    std::string Receive(const int timeOut, const int chunkSize=512); // TODO: make timeOut double of melliseconds
 
     void Close();
     bool IsConnected() const;

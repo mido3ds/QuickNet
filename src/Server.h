@@ -24,10 +24,10 @@ public:
 
 private:
     RoutesMap routes;
-    const Socket clientSocket;
+    Socket clientSocket;
 
     bool RouteIsAssigned(const std::string& route);
-    http::Request ReceiveRequest() const;
+    http::Request ReceiveRequest();
     http::Response HandleRequest(const http::Request&) const;
     void SendResponse(const http::Response&);
 };

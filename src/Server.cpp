@@ -37,9 +37,25 @@ bool Server::RouteIsAssigned(const std::string& route)
 
 /////////////////////////////////////////////////////////////////
 
-Request Server::ReceiveRequest() const
+Request Server::ReceiveRequest()
 {
-    // TODO
+    string str, temp;
+    const int timeOut = 2;
+
+    while (true)
+    {
+        temp = clientSocket.Receive(timeOut);
+
+        if (temp == "")
+            break;
+        else 
+            str += temp;
+
+        if (Request::IsValid(str))
+            return Request::Parse(str);
+    }
+
+    throw exception();  // TODO
 }
 
 Response Server::HandleRequest(const Request&) const
