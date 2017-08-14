@@ -6,6 +6,8 @@
 #include <functional>
 #include <exception>
 #include "Socket.h"
+#include "http/Request.h"
+#include "http/Response.h"
 
 class Server
 {
@@ -25,6 +27,9 @@ private:
     const Socket clientSocket;
 
     bool RouteIsAssigned(const std::string& route);
+    http::Request ReceiveRequest() const;
+    http::Response HandleRequest(const http::Request&) const;
+    void SendResponse(const http::Response&);
 };
 
 #endif  /* __Server_h__ */

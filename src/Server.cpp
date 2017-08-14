@@ -2,6 +2,7 @@
 
 using std::string;
 using std::exception;
+using namespace http;
 
 Server::Server(const Socket& clientSocket)
     :clientSocket(clientSocket)
@@ -14,13 +15,9 @@ Server::~Server()
 
 void Server::Serve()
 {
-    // TODO
-    /*pseudocode:
-            while is_connected and connection_not_timed_out():
-                req = receive_req()
-                respnse = handle_req(req)
-                send_response(response)
-    */
+    Request req = ReceiveRequest();
+    Response res = HandleRequest(req);
+    SendResponse(res);
 }
 
 void Server::AssignRoute(const std::string& route, const RouteListener& listener)
@@ -36,4 +33,21 @@ void Server::AssignRoute(const std::string& route, const RouteListener& listener
 bool Server::RouteIsAssigned(const std::string& route)
 {
     return routes.find(route) != routes.end();
+}
+
+/////////////////////////////////////////////////////////////////
+
+Request Server::ReceiveRequest() const
+{
+    // TODO
+}
+
+Response Server::HandleRequest(const Request&) const
+{
+    // TODO
+}
+
+void Server::SendResponse(const Response&)
+{
+    // TODO
 }
