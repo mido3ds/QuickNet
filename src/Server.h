@@ -23,10 +23,10 @@ public:
     void AssignRoute(const std::string& route, const RouteListener& listener);
 
 private:
-    RoutesMap routes;
+    static RoutesMap routes;
     Socket clientSocket;
 
-    inline bool RouteIsAssigned(const std::string& route);
+    inline static bool RouteIsAssigned(const std::string& route);
     inline http::Request ReceiveRequest();
     inline http::Response HandleRequest(const http::Request&) const;
     inline void SendResponse(const http::Response&);
