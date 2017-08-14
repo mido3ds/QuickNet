@@ -15,6 +15,12 @@ Server::~Server()
 void Server::Serve()
 {
     // TODO
+    /*pseudocode:
+            while is_connected and connection_not_timed_out():
+                req = receive_req()
+                respnse = handle_req(req)
+                send_response(response)
+    */
 }
 
 void Server::AssignRoute(const std::string& route, const RouteListener& listener)

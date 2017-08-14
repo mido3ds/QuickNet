@@ -4,6 +4,7 @@
 #include <string>
 #include <exception>
 #include "Socket.h"
+#include "Server.h"
 
 struct OptionsPackage
 {

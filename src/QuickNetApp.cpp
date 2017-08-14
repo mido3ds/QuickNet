@@ -21,6 +21,7 @@ inline void QuickNetApp::ConstructorHelper(OptionsPackage pack)
 
 QuickNetApp::~QuickNetApp()
 {
+    socket->Close();
     delete socket;
 }
 
@@ -30,17 +31,12 @@ void QuickNetApp::Run() noexcept
 {
     while (true)
     {
-        socket->Listen(20); // TODO: discuss number of connections
-        Socket client = socket->Accept();
-
-        /*pseudocode:
-            new_thread = new Thread()
-            // in the new_thread
-            while is_connected and connection_not_timed_out():
-                req = receive_req()
-                respnse = handle_req(req)
-                send_response(response)
-        */
+        // TODO: discuss number of connections
+        socket->Listen(20);
+        
+        // TODO: make it in new thread
+        Server server(socket->Accept());
+        server.Serve();
     }
 }
 
