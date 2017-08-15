@@ -5,16 +5,21 @@ using std::exception;
 
 using namespace http;
 
-URL::URL(const string& path, const Parametres& parms)
-    :path(path), parms(parms)
+string URL::Encode(URIType toType) const
 {
-    if (path.size() == 0)
-        throw exception(); // TODO
-}
+    string encoded;
 
-string URL::Encode() const
-{
-    // TODO
+    if (toType == ABS_URI)
+        encoded = scheme + "://" + host;
+    
+    // TODO: make sure no duplicates of '/' when appending host and path
+    encoded += path;
+    if (parms.size() != 0)
+        encoded += EncodeParms(parms);
+    if (query.size() != 0)
+        encoded += EncodeQuery(query);
+
+    return encoded;
 }
 
 URL URL::Decode(const string&)
@@ -22,12 +27,32 @@ URL URL::Decode(const string&)
     // TODO
 }
 
-void URL::Escape(std::string&)
+inline void URL::Escape(string&)
 {
     // TODO
 }
 
-bool URL::IsValid(const std::string&)
+inline bool URL::IsValid(const string&)
+{
+    // TODO
+}
+
+inline string EncodeQuery(const Query&)
+{
+    // TODO
+}
+
+inline string EncodeParms(const Parametres&)
+{
+    // TODO
+}
+
+inline Query DecodeQuery(const string&)
+{
+    // TODO
+}
+
+inline Parametres DecodeParms(const string&)
 {
     // TODO
 }

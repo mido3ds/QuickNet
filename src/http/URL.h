@@ -9,22 +9,32 @@
 namespace http
 {
 
+// info: https://www.tutorialspoint.com/http/http_requests.htm
 enum URIType {ASTERISK, ABS_PATH, ABS_URI};
 
 class URL
 {
     using Parametres = std::unordered_map<std::string, std::string>;
+    using Query = Parametres;
 
 public:
-    URL(const std::string& path, const Parametres& parms);
+    std::string Encode(URIType toType=ABS_PATH) const;
 
-    std::string Encode() const; // TODO: make options for full/short url encoding
     static URL Decode(const std::string&);
-    static void Escape(std::string&);
-    static bool IsValid(const std::string&);
+    static inline void Escape(std::string&);
+    static inline bool IsValid(const std::string&);
 
-    const std::string path;
+    const std::string scheme, host, port, path;
     const Parametres parms;
+    const Query query;
+
+private:
+    const URIType type;
+    
+    static inline std::string EncodeQuery(const Query&);
+    static inline std::string EncodeParms(const Parametres&);
+    static inline Query DecodeQuery(const std::string&);
+    static inline Parametres DecodeParms(const std::string&);
 };
 
 }
