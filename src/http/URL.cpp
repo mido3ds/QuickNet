@@ -21,3 +21,13 @@ URL URL::Decode(const string&)
 {
     // TODO
 }
+
+void URL::Escape(std::string&)
+{
+    // TODO
+}
+
+bool URL::IsValid(const std::string&)
+{
+    // TODO
+}

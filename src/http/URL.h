@@ -16,12 +16,13 @@ class URL
 public:
     URL(const std::string& path, const Parametres& parms);
 
-    std::string Encode() const;
+    std::string Encode() const; // TODO: make options for full/short url encoding
     static URL Decode(const std::string&);
+    static void Escape(std::string&);
+    static bool IsValid(const std::string&);
 
     const std::string path;
     const Parametres parms;
-private:
 };
 
 }
