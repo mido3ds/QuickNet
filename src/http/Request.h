@@ -9,6 +9,7 @@
 
 #include "Methods.h"
 #include "Fields.h"
+#include "URI.h"
 
 namespace http
 {
@@ -17,9 +18,9 @@ class Request
 {
 public:
     Request(
-        const Method& method, const std::string& uri,  
-        const std::string& version, const std::string& message, 
-        const Fields& fields
+        const Method& method, const URI& uri
+        const std::string& version,
+        const std::string& message, const Fields& fields
     );
     static Request Parse(const std::string& toParse);
 
@@ -27,10 +28,11 @@ public:
     static bool IsValid(const std::string& toParse);
 
     const Method method;
-    const std::string uri,
-                      version,
+    const URI uri;
+    const std::string version,
                       message;
     const Fields fields;
+
 private:
     static const std::regex bodyRegEx;
     enum RegExIndices {ALL, METHOD_INDEX, URI_INDEX, VER_INDEX, FIELD_INDEX, MSG_INDEX};

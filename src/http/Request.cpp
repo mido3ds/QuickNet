@@ -12,10 +12,10 @@ const std::regex Request::bodyRegEx(
     std::regex_constants::optimize
 ); 
 
-Request::Request(const Method& method, const string& uri, const string& version, const string& message, const Fields& fields)
+Request::Request(const Method& method, const URI& uri const string& version, const string& message, const Fields& fields)
     :method(method), uri(uri), version(version), message(message), fields(fields)
 {
-    if (uri.size() == 0 || version.size() == 0) 
+    if (version.size() == 0) 
         throw exception(); // TODO
 }
 
