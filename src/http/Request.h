@@ -18,7 +18,7 @@ class Request
 {
 public:
     Request(
-        const Method& method, const URI& uri
+        const Method& method, const URI& uri,
         const std::string& version,
         const std::string& message, const Fields& fields
     );

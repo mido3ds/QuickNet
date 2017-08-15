@@ -12,7 +12,7 @@ const std::regex Request::bodyRegEx(
     std::regex_constants::optimize
 ); 
 
-Request::Request(const Method& method, const URI& uri const string& version, const string& message, const Fields& fields)
+Request::Request(const Method& method, const URI& uri, const string& version, const string& message, const Fields& fields)
     :method(method), uri(uri), version(version), message(message), fields(fields)
 {
     if (version.size() == 0) 
@@ -33,7 +33,7 @@ Request Request::Parse(const string& toParse)
            &message = results[MSG_INDEX];
     Fields fs = ParseFields(results[FIELD_INDEX]);
 
-    return Request(StringToMethod(method), uri, ver, message, fs);
+    return Request(StringToMethod(method), URI::Decode(uri), ver, message, fs);
 }
 
 string Request::ConstructString() const
@@ -41,7 +41,7 @@ string Request::ConstructString() const
     const char *CRLF = "\r\n", 
                 *SP = " ";
 
-    string newString = method + SP + uri + SP + "HTTP/" + version + CRLF;
+    string newString = method + SP + uri.Encode() + SP + "HTTP/" + version + CRLF;
     for (auto& pair:fields)
         newString += pair.first + ": " + pair.second + CRLF;
     if (message != "")

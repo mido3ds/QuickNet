@@ -16,7 +16,7 @@ class URI
 public:
     URI(const std::string& path, const Parametres& parms);
 
-    std::string Encode();
+    std::string Encode() const;
     static URI Decode(const std::string&);
 
     const std::string path;

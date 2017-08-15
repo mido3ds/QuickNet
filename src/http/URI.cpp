@@ -12,12 +12,12 @@ URI::URI(const string& path, const Parametres& parms)
         throw exception(); // TODO
 }
 
-string URI::Encode()
+string URI::Encode() const
 {
     // TODO
 }
 
-static URI URI::Decode(const string&)
+URI URI::Decode(const string&)
 {
     // TODO
 }
