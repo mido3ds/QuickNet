@@ -9,7 +9,7 @@
 
 #include "Methods.h"
 #include "Fields.h"
-#include "URI.h"
+#include "URL.h"
 
 namespace http
 {
@@ -18,7 +18,7 @@ class Request
 {
 public:
     Request(
-        const Method& method, const URI& uri,
+        const Method& method, const URL& url,
         const std::string& version,
         const std::string& message, const Fields& fields
     );
@@ -28,7 +28,7 @@ public:
     static bool IsValid(const std::string& toParse);
 
     const Method method;
-    const URI uri;
+    const URL url;
     const std::string version,
                       message;
     const Fields fields;

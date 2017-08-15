@@ -9,15 +9,15 @@
 namespace http
 {
 
-class URI
+class URL
 {
     using Parametres = std::unordered_map<std::string, std::string>;
 
 public:
-    URI(const std::string& path, const Parametres& parms);
+    URL(const std::string& path, const Parametres& parms);
 
     std::string Encode() const;
-    static URI Decode(const std::string&);
+    static URL Decode(const std::string&);
 
     const std::string path;
     const Parametres parms;
