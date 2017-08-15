@@ -9,6 +9,8 @@
 namespace http
 {
 
+enum URIType {ASTERISK, ABS_PATH, ABS_URI};
+
 class URL
 {
     using Parametres = std::unordered_map<std::string, std::string>;
