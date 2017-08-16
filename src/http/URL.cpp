@@ -3,8 +3,23 @@
 using std::string;
 using std::stringstream;
 using std::exception;
+using std::smatch;
 
 using namespace http;
+
+URL::URL(
+        const std::string& scheme, const std::string& host, 
+        const std::string& port, const std::string& path, 
+        const Parametres& parms, const Query& query
+        URIType type
+    )
+    :scheme(scheme), host(host), port(port), path(path), parms(parms), query(query), type(type)
+{}
+
+static inline URL::Asterisk()
+{
+    return URL("", "", "", "", {}, {}, ASTERISK);
+}
 
 string URL::Encode(URIType toType) const
 {
@@ -26,43 +41,59 @@ string URL::Encode(URIType toType) const
 URL URL::Decode(const string& toDecode)
 {
     // TODO
-    /*pseudocode
-        
-    */
+    if (toDecode == "*")
+        return URL::Asterisk();
+
+    // static std::regex urlRegex = "...."; 
+    smatch results;
+
+    if (!TryMatch(toDecode, results))
+        throw exception(); // TODO
+
+    // auto &shceme = results[SCHEME_INDEX] or "http",
+    //     &host = results[HOST_INDEX],
+    //     &port = results[PORT_INDEX] or "80",
+    //     &path = resutls[PATH_INDEX] or throw exception(),
+
+    //     parms = DecodeParms(results[PARMS_INDEX]),
+    //     query = DecodeQuery(results[QUERY_INDEX]),
+
+    //     type = GetType(toDecode);
+
+    return URL(scheme, host, port, path, parms, query, type);
 }
 
 inline void URL::Escape(string&)
 {
     // TODO
     /*pseudocode
-        
+
     */
 }
 
 bool URL::IsValid(const string& in)
 {
-    if (in == "*") return true;
-
-    // return regexpr_match(URLRegex, in);
+    smatch temp;
+    return TryMatch(in);
 }
 
-inline string EncodeQuery(const Query& toEncode)
+inline string URL::EncodeQuery(const Query& toEncode)
 {
     // TODO
     /*pseudocode
-        
+
     */
 }
 
-inline string EncodeParms(const Parametres& toEncode)
+inline string URL::EncodeParms(const Parametres& toEncode)
 {
     // TODO
     /*pseudocode
-        
+
     */
 }
 
-inline Query DecodeQuery(const string& toDecode)
+inline Query URL::DecodeQuery(const string& toDecode)
 {
     // TODO
     /*pseudocode
@@ -80,7 +111,7 @@ inline Query DecodeQuery(const string& toDecode)
     */
 }
 
-inline Parametres DecodeParms(const string& toDecode)
+inline Parametres URL::DecodeParms(const string& toDecode)
 {
     // TODO
     /*pseudocode
@@ -96,4 +127,9 @@ inline Parametres DecodeParms(const string& toDecode)
 
         return decoded;
     */
+}
+
+inline bool URL::TryMatch(const std::string& toMatch, std::smatch& results)
+{
+    return regex_match(toMatch, results, urlRegex);
 }

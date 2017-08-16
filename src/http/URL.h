@@ -19,8 +19,15 @@ class URL
     using Query = Parametres;
 
 public:
-    std::string Encode(URIType toType=ABS_PATH) const;
+    URL(
+        const std::string& scheme, const std::string& host, 
+        const std::string& port, const std::string& path, 
+        const Parametres& parms, const Query& query,
+        URIType type
+    );
+    static inline Asterisk();
 
+    std::string Encode(URIType toType=ABS_PATH) const;
     static URL Decode(const std::string&);
     static inline void Escape(std::string&);
     static bool IsValid(const std::string&);
@@ -31,11 +38,13 @@ public:
 
 private:
     const URIType type;
+    enum RegExIndices {SCHEME_INDEX, HOST_INDEX, PORT_INDEX, PATH_INDEX, PARMS_INDEX, QUERY_INDEX};
 
     static inline std::string EncodeQuery(const Query&);
     static inline std::string EncodeParms(const Parametres&);
     static inline Query DecodeQuery(const std::string&);
     static inline Parametres DecodeParms(const std::string&);
+    static inline bool TryMatch(const std::string& toMatch, std::smatch& results);
 };
 
 }
