@@ -2,6 +2,7 @@
 #define __URI_h__
 
 #include <string>
+#include <sstream>
 #include <regex>
 #include <unordered_map>
 #include <exception>
@@ -22,7 +23,7 @@ public:
 
     static URL Decode(const std::string&);
     static inline void Escape(std::string&);
-    static inline bool IsValid(const std::string&);
+    static bool IsValid(const std::string&);
 
     const std::string scheme, host, port, path;
     const Parametres parms;
@@ -30,7 +31,7 @@ public:
 
 private:
     const URIType type;
-    
+
     static inline std::string EncodeQuery(const Query&);
     static inline std::string EncodeParms(const Parametres&);
     static inline Query DecodeQuery(const std::string&);
