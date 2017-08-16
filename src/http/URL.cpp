@@ -8,22 +8,16 @@ using std::smatch;
 using namespace http;
 
 const std::regex URL::urlRegex(
-    "(?:(\\w*)?(?::\\/\\/)([^/:]*)?(?::(\\d*))?(\\/[^;?]*)?(?:;([^?]*))?(?:\\?(\\S*))?)|\\*|\\/"
+    "(?:(\\w*)?(?::\\/\\/)([^/:]*)?(?::(\\d*))?(\\/[^;?]*)?(?:;([^?]*))?(?:\\?(\\S*))?)|\\/"
 );
 
 URL::URL(
         const std::string& scheme, const std::string& host, 
         const std::string& port, const std::string& path, 
         const Parametres& parms, const Query& query
-        URIType type
     )
-    :scheme(scheme), host(host), port(port), path(path), parms(parms), query(query), type(type)
+    :scheme(scheme), host(host), port(port), path(path), parms(parms), query(query)
 {}
-
-inline URL URL::Asterisk()
-{
-    return URL("", "", "", "", {}, {}, ASTERISK);
-}
 
 string URL::Encode(URIType toType) const
 {
@@ -44,9 +38,6 @@ string URL::Encode(URIType toType) const
 
 URL URL::Decode(const string& toDecode)
 {
-    if (toDecode == "*")
-        return URL::Asterisk();
- 
     smatch results;
 
     if (!TryMatch(toDecode, results))
@@ -60,16 +51,14 @@ URL URL::Decode(const string& toDecode)
     Parametres parms = DecodeParms(results[PARMS_INDEX]);
     Query query = DecodeQuery(results[QUERY_INDEX]);
 
-    URIType type = GetType(toDecode);
-
     if (scheme == "") scheme = "http";
     if (port == "") port = "80";
     if (path == "") path = "/";
 
-    return URL(scheme, host, port, path, parms, query, type);
+    return URL(scheme, host, port, path, parms, query);
 }
 
-inline void URL::Escape(string&)
+inline void URL::Escape(string& toEsc)
 {
     // TODO
     /*pseudocode
@@ -99,7 +88,7 @@ inline string URL::EncodeParms(const Parametres& toEncode)
     */
 }
 
-inline Query URL::DecodeQuery(const string& toDecode)
+inline URL::Query URL::DecodeQuery(const string& toDecode)
 {
     // TODO
     /*pseudocode
@@ -117,7 +106,7 @@ inline Query URL::DecodeQuery(const string& toDecode)
     */
 }
 
-inline Parametres URL::DecodeParms(const string& toDecode)
+inline URL::Parametres URL::DecodeParms(const string& toDecode)
 {
     // TODO
     /*pseudocode

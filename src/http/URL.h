@@ -23,10 +23,8 @@ public:
     URL(
         const std::string& scheme, const std::string& host, 
         const std::string& port, const std::string& path, 
-        const Parametres& parms, const Query& query,
-        URIType type
+        const Parametres& parms, const Query& query
     );
-    static inline URL Asterisk();
 
     std::string Encode(URIType toType=ABS_PATH) const;
     static URL Decode(const std::string&);
@@ -38,7 +36,6 @@ public:
     const Query query;
 
 private:
-    const URIType type;
     const static std::regex urlRegex;
     enum RegExIndices {SCHEME_INDEX, HOST_INDEX, PORT_INDEX, PATH_INDEX, PARMS_INDEX, QUERY_INDEX};
 
