@@ -37,6 +37,7 @@ public:
 
 private:
     const static std::regex urlRegex;
+    const static std::regex queryOrParmsRegExpr;
     enum RegExIndices {SCHEME_INDEX, HOST_INDEX, PORT_INDEX, PATH_INDEX, PARMS_INDEX, QUERY_INDEX};
 
     static inline std::string EncodeQuery(const Query&);

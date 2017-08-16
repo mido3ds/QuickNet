@@ -4,11 +4,20 @@ using std::string;
 using std::stringstream;
 using std::exception;
 using std::smatch;
+using std::cmatch;
+using std::regex;
+using std::regex_match;
 
 using namespace http;
 
-const std::regex URL::urlRegex(
-    "(?:(\\w*)?(?::\\/\\/)([^/:]*)?(?::(\\d*))?(\\/[^;?]*)?(?:;([^?]*))?(?:\\?(\\S*))?)|\\/"
+const regex URL::urlRegex(
+    "(?:(\\w*)?(?::\\/\\/)([^/:]*)?(?::(\\d*))?(\\/[^;?]*)?(;[^?]*)?(\\?\\S*)?)|\\/", 
+    std::regex_constants::optimize
+);
+
+const regex queryOrParmsRegExpr(
+    "(?:([^=]*)(?:=(\\S*))?)", 
+    std::regex_constants::optimize
 );
 
 URL::URL(
@@ -26,7 +35,6 @@ string URL::Encode(URIType toType) const
     if (toType == ABS_URI)
         encoded = scheme + "://" + host;
     
-    // TODO: make sure no duplicates of '/' when appending host and path
     encoded += path;
     if (parms.size() != 0)
         encoded += EncodeParms(parms);
@@ -74,57 +82,77 @@ bool URL::IsValid(const string& in)
 
 inline string URL::EncodeQuery(const Query& toEncode)
 {
-    // TODO
-    /*pseudocode
+    if (toEncode.size() == 0) return "";
 
-    */
+    string toReturn;
+    for (auto& query: toEncode)
+        toReturn += "&" + query.first + "=" + query.second;
+    
+    toReturn[0] = '?';
+
+    return toReturn;
 }
 
 inline string URL::EncodeParms(const Parametres& toEncode)
 {
-    // TODO
-    /*pseudocode
+    if (toEncode.size() == 0) return "";
 
-    */
+    string toReturn;
+    for (auto& query: toEncode)
+        toReturn += ";" + query.first + "=" + query.second;
+
+    return toReturn;
 }
 
 inline URL::Query URL::DecodeQuery(const string& toDecode)
 {
-    // TODO
-    /*pseudocode
-        Query decoded;
-        static std::regex queryRegExpr = "....";
-        smatch results;
+    if (toDecode == "") return {};
+    assert(toDecode[0] == '?');
 
-        if (!regexpr_match(queryRegExpr, results,toEncode)) 
+    Query decoded;
+    cmatch results;
+
+    // copy from position 1 .. to avoid ? at beginning
+    char* cstr = new char[toDecode.size()];
+    strcpy(cstr, toDecode.c_str() + 1);
+
+    for (cstr = strtok (cstr, "&"); cstr != nullptr; cstr = strtok (cstr, "&"))
+    {
+        if (!regex_match(cstr, results, queryOrParmsRegExpr))
             throw exception(); // TODO
-        
-        for (int i = 0; i < smatch.size(); i += 2)
-            decoded[results[i]] = decoded[results[i+1]];
 
-        return decoded;
-    */
+        for (int i = 0; i < results.size(); i += 2)
+            decoded[results[i]] = decoded[results[i+1]];
+    }
+
+    return decoded;
 }
 
 inline URL::Parametres URL::DecodeParms(const string& toDecode)
 {
-    // TODO
-    /*pseudocode
-        Parametres decoded;
-        static std::regex parmsRegExpr = "....";
-        smatch results;
+    if (toDecode == "") return {};
+    assert(toDecode[0] == ';');
 
-        if (!regexpr_match(regex, results,toEncode)) 
+    Parametres decoded;
+    cmatch results;
+
+    // copy from position 1 .. to avoid ; at beginning
+    char* cstr = new char[toDecode.size()];
+    strcpy(cstr, toDecode.c_str() + 1);
+
+    for (cstr = strtok (cstr, "&"); cstr != nullptr; cstr = strtok (cstr, "&"))
+    {
+        if (!regex_match(cstr, results, queryOrParmsRegExpr))
             throw exception(); // TODO
-        
-        for (int i = 0; i < smatch.size(); i += 2)
-            decoded[results[i]] = decoded[results[i+1]];
 
-        return decoded;
-    */
+        for (int i = 0; i < results.size(); i += 2)
+            decoded[results[i]] = decoded[results[i+1]];
+    }
+
+    return decoded;
 }
 
-inline bool URL::TryMatch(const std::string& toMatch, std::smatch& results)
+inline bool URL::TryMatch(const string& toMatch, smatch& results)
 {
     return regex_match(toMatch, results, urlRegex);
 }
