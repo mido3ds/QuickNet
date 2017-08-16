@@ -7,6 +7,10 @@ using std::smatch;
 
 using namespace http;
 
+const std::regex URL::urlRegex(
+    "(?:(\\w*)?(?::\\/\\/)([^/:]*)?(?::(\\d*))?(\\/[^;?]*)?(?:;([^?]*))?(?:\\?(\\S*))?)|\\*|\\/"
+);
+
 URL::URL(
         const std::string& scheme, const std::string& host, 
         const std::string& port, const std::string& path, 
@@ -16,7 +20,7 @@ URL::URL(
     :scheme(scheme), host(host), port(port), path(path), parms(parms), query(query), type(type)
 {}
 
-static inline URL::Asterisk()
+inline URL URL::Asterisk()
 {
     return URL("", "", "", "", {}, {}, ASTERISK);
 }
@@ -40,25 +44,27 @@ string URL::Encode(URIType toType) const
 
 URL URL::Decode(const string& toDecode)
 {
-    // TODO
     if (toDecode == "*")
         return URL::Asterisk();
-
-    // static std::regex urlRegex = "...."; 
+ 
     smatch results;
 
     if (!TryMatch(toDecode, results))
         throw exception(); // TODO
 
-    // auto &shceme = results[SCHEME_INDEX] or "http",
-    //     &host = results[HOST_INDEX],
-    //     &port = results[PORT_INDEX] or "80",
-    //     &path = resutls[PATH_INDEX] or throw exception(),
+    string scheme = results[SCHEME_INDEX],
+        host = results[HOST_INDEX],
+        port = results[PORT_INDEX],
+        path = results[PATH_INDEX];
 
-    //     parms = DecodeParms(results[PARMS_INDEX]),
-    //     query = DecodeQuery(results[QUERY_INDEX]),
+    Parametres parms = DecodeParms(results[PARMS_INDEX]);
+    Query query = DecodeQuery(results[QUERY_INDEX]);
 
-    //     type = GetType(toDecode);
+    URIType type = GetType(toDecode);
+
+    if (scheme == "") scheme = "http";
+    if (port == "") port = "80";
+    if (path == "") path = "/";
 
     return URL(scheme, host, port, path, parms, query, type);
 }
@@ -74,7 +80,7 @@ inline void URL::Escape(string&)
 bool URL::IsValid(const string& in)
 {
     smatch temp;
-    return TryMatch(in);
+    return TryMatch(in, temp);
 }
 
 inline string URL::EncodeQuery(const Query& toEncode)

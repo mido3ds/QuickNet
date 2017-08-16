@@ -6,6 +6,7 @@
 #include <regex>
 #include <unordered_map>
 #include <exception>
+#include <cassert>
 
 namespace http
 {
@@ -25,7 +26,7 @@ public:
         const Parametres& parms, const Query& query,
         URIType type
     );
-    static inline Asterisk();
+    static inline URL Asterisk();
 
     std::string Encode(URIType toType=ABS_PATH) const;
     static URL Decode(const std::string&);
@@ -38,6 +39,7 @@ public:
 
 private:
     const URIType type;
+    const static std::regex urlRegex;
     enum RegExIndices {SCHEME_INDEX, HOST_INDEX, PORT_INDEX, PATH_INDEX, PARMS_INDEX, QUERY_INDEX};
 
     static inline std::string EncodeQuery(const Query&);
