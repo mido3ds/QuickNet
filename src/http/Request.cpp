@@ -24,7 +24,7 @@ Request Request::Parse(const string& toParse)
     smatch results;
     string failure_description;
 
-    if (!TryMatch(toParse, results, failure_description)) 
+    if (!TryMatching(toParse, results, failure_description)) 
         throw exception(); // TODO
 
     auto &method = results[METHOD_INDEX],
@@ -33,7 +33,7 @@ Request Request::Parse(const string& toParse)
            &message = results[MSG_INDEX];
     Fields fs = ParseFields(results[FIELD_INDEX]);
 
-    return Request(StringToMethod(method), URL::Decode(url), ver, message, fs);
+    return Request(StringToMethod(method), URL::Parse(url), ver, message, fs);
 }
 
 string Request::ConstructString() const
@@ -41,7 +41,7 @@ string Request::ConstructString() const
     const char *CRLF = "\r\n", 
                 *SP = " ";
 
-    string newString = method + SP + url.Encode() + SP + "HTTP/" + version + CRLF;
+    string newString = method + SP + url.ConstructString() + SP + "HTTP/" + version + CRLF;
     for (auto& pair:fields)
         newString += pair.first + ": " + pair.second + CRLF;
     if (message != "")
@@ -55,10 +55,10 @@ bool Request::IsValid(const string& toParse)
 {
     smatch temp_results;
     string temp_str;
-    return TryMatch(toParse, temp_results, temp_str);
+    return TryMatching(toParse, temp_results, temp_str);
 }
 
-inline bool Request::TryMatch(const string& toParse, smatch& matchResults, string& failureReason)
+inline bool Request::TryMatching(const string& toParse, smatch& matchResults, string& failureReason)
 {
     if (!regex_match(toParse, matchResults, bodyRegEx))
     {

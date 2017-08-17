@@ -1,7 +1,6 @@
 #include "URL.h"
 
 using std::string;
-using std::stringstream;
 using std::exception;
 using std::smatch;
 using std::cmatch;
@@ -28,7 +27,7 @@ URL::URL(
     :scheme(scheme), host(host), port(port), path(path), parms(parms), query(query)
 {}
 
-string URL::Encode(URIType toType) const
+string URL::ConstructString(URIType toType) const
 {
     string encoded;
 
@@ -37,18 +36,18 @@ string URL::Encode(URIType toType) const
     
     encoded += path;
     if (parms.size() != 0)
-        encoded += EncodeParms(parms);
+        encoded += ParmsToString(parms);
     if (query.size() != 0)
-        encoded += EncodeQuery(query);
+        encoded += QueryToString(query);
 
     return encoded;
 }
 
-URL URL::Decode(const string& toDecode)
+URL URL::Parse(const string& toDecode)
 {
     smatch results;
 
-    if (!TryMatch(toDecode, results))
+    if (!TryMatching(toDecode, results))
         throw exception(); // TODO
 
     string scheme = results[SCHEME_INDEX],
@@ -56,8 +55,8 @@ URL URL::Decode(const string& toDecode)
         port = results[PORT_INDEX],
         path = results[PATH_INDEX];
 
-    Parametres parms = DecodeParms(results[PARMS_INDEX]);
-    Query query = DecodeQuery(results[QUERY_INDEX]);
+    Parametres parms = ParseParms(results[PARMS_INDEX]);
+    Query query = ParseQuery(results[QUERY_INDEX]);
 
     if (scheme == "") scheme = "http";
     if (port == "") port = "80";
@@ -66,7 +65,7 @@ URL URL::Decode(const string& toDecode)
     return URL(scheme, host, port, path, parms, query);
 }
 
-inline void URL::Escape(string& toEsc)
+inline void URL::Encode(string& toEnc)
 {
     // TODO
     /*pseudocode
@@ -74,7 +73,7 @@ inline void URL::Escape(string& toEsc)
     */
 }
 
-inline void URL::RemoveEscape(string& toEsc)
+inline void URL::Decode(string& toDec)
 {
     // TODO
     /*pseudocode
@@ -82,18 +81,17 @@ inline void URL::RemoveEscape(string& toEsc)
     */
 }
 
-bool URL::IsValid(const string& in)
+bool URL::IsValid(const string& url)
 {
-    smatch temp;
-    return TryMatch(in, temp);
+    return regex_match(url, urlRegex);
 }
 
-inline string URL::EncodeQuery(const Query& toEncode)
+inline string URL::QueryToString(const Query& query)
 {
-    if (toEncode.size() == 0) return "";
+    if (query.size() == 0) return "";
 
     string toReturn;
-    for (auto& query: toEncode)
+    for (auto& query: query)
         toReturn += "&" + query.first + "=" + query.second;
     
     toReturn[0] = '?';
@@ -101,28 +99,28 @@ inline string URL::EncodeQuery(const Query& toEncode)
     return toReturn;
 }
 
-inline string URL::EncodeParms(const Parametres& toEncode)
+inline string URL::ParmsToString(const Parametres& parms)
 {
-    if (toEncode.size() == 0) return "";
+    if (parms.size() == 0) return "";
 
     string toReturn;
-    for (auto& query: toEncode)
+    for (auto& query: parms)
         toReturn += ";" + query.first + "=" + query.second;
 
     return toReturn;
 }
 
-inline URL::Query URL::DecodeQuery(const string& toDecode)
+inline URL::Query URL::ParseQuery(const string& toParse)
 {
-    if (toDecode == "") return {};
-    assert(toDecode[0] == '?');
+    if (toParse == "") return {};
+    assert(toParse[0] == '?');
 
     Query decoded;
     cmatch results;
 
     // copy from position 1 .. to avoid ? at beginning
-    char* cstr = new char[toDecode.size()];
-    strcpy(cstr, toDecode.c_str() + 1);
+    char* cstr = new char[toParse.size()];
+    strcpy(cstr, toParse.c_str() + 1);
 
     for (cstr = strtok (cstr, "&"); cstr != nullptr; cstr = strtok (cstr, "&"))
     {
@@ -136,17 +134,17 @@ inline URL::Query URL::DecodeQuery(const string& toDecode)
     return decoded;
 }
 
-inline URL::Parametres URL::DecodeParms(const string& toDecode)
+inline URL::Parametres URL::ParseParms(const string& toParse)
 {
-    if (toDecode == "") return {};
-    assert(toDecode[0] == ';');
+    if (toParse == "") return {};
+    assert(toParse[0] == ';');
 
     Parametres decoded;
     cmatch results;
 
     // copy from position 1 .. to avoid ; at beginning
-    char* cstr = new char[toDecode.size()];
-    strcpy(cstr, toDecode.c_str() + 1);
+    char* cstr = new char[toParse.size()];
+    strcpy(cstr, toParse.c_str() + 1);
 
     for (cstr = strtok (cstr, "&"); cstr != nullptr; cstr = strtok (cstr, "&"))
     {
@@ -160,7 +158,7 @@ inline URL::Parametres URL::DecodeParms(const string& toDecode)
     return decoded;
 }
 
-inline bool URL::TryMatch(const string& toMatch, smatch& results)
+inline bool URL::TryMatching(const string& toMatch, smatch& results)
 {
     return regex_match(toMatch, results, urlRegex);
 }

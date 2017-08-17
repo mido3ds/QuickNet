@@ -29,7 +29,7 @@ Response Response::Parse(const string& toParse)
     smatch results;
     string failure_description;
 
-    if (!TryMatch(toParse, results, failure_description)) 
+    if (!TryMatching(toParse, results, failure_description)) 
         throw exception(); // TODO
 
     auto &version = results[VER_INDEX],
@@ -60,10 +60,10 @@ bool Response::IsValid(const string& toParse)
 {
     smatch temp_results;
     string temp_str;
-    return TryMatch(toParse, temp_results, temp_str);
+    return TryMatching(toParse, temp_results, temp_str);
 }
 
-inline bool Response::TryMatch(const string& toParse, smatch& matchResults, string& failureReason)
+inline bool Response::TryMatching(const string& toParse, smatch& matchResults, string& failureReason)
 {
     if (!regex_match(toParse, matchResults, bodyRegEx))
     {
