@@ -74,6 +74,14 @@ inline void URL::Escape(string& toEsc)
     */
 }
 
+inline void URL::RemoveEscape(string& toEsc)
+{
+    // TODO
+    /*pseudocode
+
+    */
+}
+
 bool URL::IsValid(const string& in)
 {
     smatch temp;

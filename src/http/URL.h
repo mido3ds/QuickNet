@@ -29,6 +29,7 @@ public:
     std::string Encode(URIType toType=ABS_PATH) const;
     static URL Decode(const std::string&);
     static inline void Escape(std::string&);
+    static inline void RemoveEscape(std::string&);
     static bool IsValid(const std::string&);
 
     const std::string scheme, host, port, path;
