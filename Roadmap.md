@@ -12,7 +12,8 @@
     
     [ ] Socket classes
         [X] make copy constructors
-        [ ] be able to reset port (use it again)     
+        [ ] be able to reset port (use it again)    
+        [ ] shutdown connection (output or input) 
         [ ] testing:
             [ ] accept and listen work properly 
             [ ] receive works within timeout, and detects it
