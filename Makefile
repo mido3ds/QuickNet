@@ -4,7 +4,7 @@ CC_FLAGS = -g
 CC_FLAGS += -std=c++$(CPP_VER)
 CC_FLAGS += -c
 
-SOURCE = src/*.cpp src/http/*.cpp
+SOURCE = src/*.cpp src/http/*.cpp src/http/responder/*.cpp
 EXEC = exec.out
 
 compile: 

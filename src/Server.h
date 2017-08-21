@@ -8,6 +8,7 @@
 #include "Socket.h"
 #include "http/Request.h"
 #include "http/Response.h"
+#include "http/responder/IResponder.h"
 
 class Server
 {

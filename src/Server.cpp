@@ -3,6 +3,7 @@
 using std::string;
 using std::exception;
 using namespace http;
+using namespace http::responder;
 
 Server::Server(const Socket& clientSocket)
     :clientSocket(clientSocket)
@@ -18,6 +19,8 @@ void Server::Serve()
     Request req = ReceiveRequest();
     Response res = HandleRequest(req);
     SendResponse(res);
+
+    // TODO: add loging
 }
 
 void Server::AssignRoute(const std::string& route, const RouteListener& listener)
@@ -60,7 +63,13 @@ inline Request Server::ReceiveRequest()
 
 inline Response Server::HandleRequest(const Request& req) const
 {
-    // TODO
+    IResponder* respondCreator;
+
+    respondCreator = IResponder::MakeResponder(req.method);
+    Response res = respondCreator->GetResponse(req);
+    
+    delete respondCreator;
+    return res;
 }
 
 inline void Server::SendResponse(const Response& res)
