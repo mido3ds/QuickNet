@@ -10,7 +10,7 @@ namespace responder
 class DeleteResponder: public IResponder
 {
 public:
-    virtual Response GetResponse(const Request&) noexcept;
+    virtual Response GetResponse(const Request&, const RoutesMap&) noexcept;
 };
 
 }}

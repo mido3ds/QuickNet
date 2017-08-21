@@ -66,7 +66,7 @@ inline Response Server::HandleRequest(const Request& req) const
     IResponder* respondCreator;
 
     respondCreator = IResponder::MakeResponder(req.method);
-    Response res = respondCreator->GetResponse(req);
+    Response res = respondCreator->GetResponse(req, routes);
     
     delete respondCreator;
     return res;

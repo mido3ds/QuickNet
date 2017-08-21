@@ -1,6 +1,5 @@
 #include "Response.h"
-
-#include "Response.h"
+#include "StatusCode.h"
 
 using namespace http;
 using std::smatch;
@@ -23,6 +22,13 @@ Response::Response(
     if (version.size() == 0 || statusCode.size() == 0 || reasonPhrase.size() == 0)
         throw exception(); // TODO
 }
+
+Response::Response(const string& statusCode, const string& message, const Fields& fields)
+    :Response("1.1", statusCode, StatusCode::GetDescription(statusCode), message, fields) // TODO: move "1.1" to constants header
+{}
+Response::Response(const string& statusCode, const Fields& fields)
+    :Response(statusCode, "", fields)
+{}
 
 Response Response::Parse(const string& toParse)
 {

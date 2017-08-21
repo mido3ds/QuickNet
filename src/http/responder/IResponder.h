@@ -8,12 +8,15 @@
 namespace http { 
 namespace responder 
 {
+    using InputPackage = std::unordered_map<std::string, std::string>;
+    using RouteListener = std::function<std::string(InputPackage)>;
+    using RoutesMap = std::unordered_map<std::string, RouteListener>;
 
 class IResponder
 {
 public:
     static IResponder* MakeResponder(Method);
-    virtual Response GetResponse(const Request&) noexcept = 0;
+    virtual Response GetResponse(const Request&, const RoutesMap&) noexcept = 0;
     virtual ~IResponder();
 };
 

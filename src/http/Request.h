@@ -27,11 +27,11 @@ public:
     std::string ConstructString() const;
     static bool IsValid(const std::string& toParse);
 
-    const Method method;
-    const URL url;
-    const std::string version,
-                      message;
-    const Fields fields;
+    Method method;
+    URL url;
+    std::string version,
+                message;
+    Fields fields;
 
 private:
     static const std::regex bodyRegEx;

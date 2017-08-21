@@ -19,16 +19,18 @@ public:
         const string& version, const string& statusCode,
         const string& reasonPhrase, const string& message, const Fields& fields
     );
+    Response(const string& statusCode, const string& message, const Fields& fields);
+    Response(const string& statusCode, const Fields& fields);
     static Response Parse(const std::string& toParse);
 
     std::string ConstructString() const;
     static bool IsValid(const std::string& toParse);
 
-    const std::string version,
-                      statusCode,                   
-                      reasonPhrase,
-                      message;
-    const Fields fields;
+    std::string version,
+                statusCode,                   
+                reasonPhrase,
+                message;
+    Fields fields;
 private:
     static const std::regex bodyRegEx;
     enum RegExIndices {ALL, VER_INDEX, STATUS_INDEX, REASON_INDEX, FIELD_INDEX, MSG_INDEX};
