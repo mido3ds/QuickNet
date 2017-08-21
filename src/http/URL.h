@@ -36,9 +36,9 @@ public:
     static inline std::string Encode(const std::string&);
     static inline std::string Decode(const std::string&);
 
-    const std::string scheme, host, port, path;
-    const Parametres parms;
-    const Query query;
+    std::string scheme, host, port, path;
+    Parametres parms;
+    Query query;
 
 private:
     const static std::regex urlRegex;
