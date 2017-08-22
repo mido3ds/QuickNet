@@ -8,17 +8,26 @@ using std::exception;
 Socket::Socket(string host, string service, SocketType type, SocketUse use)
     :type(type), use(use)
 {
-    addrinfo *res = GetAddrInfo(host, service);
-    assert(res != nullptr);
+    addrinfo* res = nullptr;
 
+    // user shouldn't provide this option
+    if (use == toServe)
+        throw exception(); // TODO
+
+    // address
+    res = GetAddrInfo(host, service);
+    assert(res != nullptr);
+    freeaddrinfo(res);
+
+    // file descriptor 
     fd = GetAndConnectFD(res);
     assert(fd != -1);
-
     isConnected = true;
-    if (use != toBind)
-        GetPeer(peer, peerLen);
 
-    freeaddrinfo(res);
+    // peer 
+    if (use == toConnect) 
+        GetPeer(peer, peerLen);
+    assert(peer != nullptr);
 }
 
 Socket::Socket(string portNumber, SocketType type, SocketUse use)
@@ -41,12 +50,13 @@ Socket::~Socket()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void Socket::Listen(int maxNumberOfCon)
+void Socket::Listen(unsigned int maxNumberOfCon)
 {
-    assert(maxNumberOfCon > 0);
-
     if (use != toBind)
-        throw exception(); // TODO
+        throw exception();  // TODO
+    if (!isConnected)
+        throw exception();  // TODO
+    assert(fd != -1);
 
     int stats = listen(fd, maxNumberOfCon);
     if (stats != 0)
@@ -57,6 +67,9 @@ Socket Socket::Accept()
 {
     if (use != toBind)
         throw exception();  // TODO
+    if (!isConnected)
+        throw exception();  // TODO
+    assert(fd != -1);
 
     FileDescriptor new_fd;
     new_fd = accept(fd, NULL, NULL);
@@ -73,8 +86,12 @@ void Socket::Send(const void* toSend, const int size)
         flags = 0, n;
     char* buffer = (char *) toSend;
 
+    if (use == toBind)
+        throw exception();  // TODO
+    assert(peer != nullptr)
     if (!isConnected) 
         throw exception(); // TODO
+    assert(fd != -1);
 
     while (bytesSent < size)
     {
@@ -94,10 +111,10 @@ void Socket::Send(string toSend)
     Send((void*) toSend.c_str(), toSend.size() + 1);
 }
 
-string Socket::Receive(const int timeOut, const int chunkSize)
+string Socket::Receive(const unsigned int timeOut, const unsigned int chunkSize)
 {
-    /* Copied from 'http://www.binarytides.com/receive-full-data-with-recv-socket-function-in-c/'
-    with my own edits */
+    assert(timeOut != 0);
+    assert(chunkSize != 0);
 
     int sizeRecvd = 0, 
         totalSize = 0, 
@@ -149,6 +166,9 @@ string Socket::Receive(const int timeOut, const int chunkSize)
 
 void Socket::Close()
 {
+    if (!isConnected)   
+        throw exception();  // TODO
+
     close(fd);
     fd = -1;
     peer = nullptr;
@@ -166,6 +186,8 @@ bool Socket::IsConnected() const
 
 addrinfo* Socket::GetAddrInfo(string host, string service) const
 {
+    assert(use != toServe);
+
     addrinfo hints, *res = nullptr;
 
     memset(&hints, 0, sizeof(addrinfo));
@@ -213,9 +235,12 @@ addrinfo* Socket::GetAddrInfo(string host, string service) const
 
 FileDescriptor Socket::GetAndConnectFD(addrinfo* res) const
 {
+    assert(use != toServe);
+    
     addrinfo *p = nullptr;
     int sfd;
 
+    // try to get a socket
     for (p = res; p != nullptr; p = p->ai_next)
     {
         if ((sfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol)) < 0)
@@ -235,6 +260,8 @@ FileDescriptor Socket::GetAndConnectFD(addrinfo* res) const
         close(sfd);
     }
 
+    // cant get a socket 
+    // TODO: detect wheter exception is from socket() or connect() or bind()
     if (p == nullptr)
         throw exception(); // TODO
 
@@ -244,6 +271,9 @@ FileDescriptor Socket::GetAndConnectFD(addrinfo* res) const
 
 void Socket::GetPeer(sockaddr_storage* &other, socklen_t &len) const
 {
+    assert(use != toBind);
+    assert(fd != -1);
+
     other = nullptr;
     len = sizeof (sockaddr_storage);
 
