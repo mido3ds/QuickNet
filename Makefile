@@ -4,6 +4,8 @@ CC_FLAGS = -g
 CC_FLAGS += -std=c++$(CPP_VER)
 CC_FLAGS += -c
 
+MAIN=examples/*.cpp
+
 SOURCE = src/*.cpp src/http/*.cpp src/http/responder/*.cpp
 EXEC = exec.out
 
@@ -11,10 +13,10 @@ compile:
 	$(CC) $(SOURCE) $(CC_FLAGS)
 
 main:
-	make compile && $(CC) *.o -o $(EXEC)
+	make compile && $(CC) -std=c++$(CPP_VER) *.o $(MAIN) -I src/ -o $(EXEC)
 
 run: 
-	$(BLD)/$(EXEC)
+	./$(EXEC)
 
 clean:
 	rm -f *.o $(EXEC)

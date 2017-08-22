@@ -16,7 +16,7 @@ QuickNetApp::QuickNetApp(OptionsPackage pack)
 }
 inline void QuickNetApp::ConstructorHelper(OptionsPackage pack)
 {
-    socket = new Socket(pack.host, pack.port, TCP, toServe);
+    socket = new Socket(pack.host, pack.port, TCP, toBind);
 }
 
 QuickNetApp::~QuickNetApp()

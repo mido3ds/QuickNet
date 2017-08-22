@@ -12,6 +12,8 @@ Server::Server(const Socket& clientSocket)
 Server::~Server()
 {}
 
+RoutesMap Server::routes;
+
 /////////////////////////////////////////////////////////////////
 
 void Server::Serve()
