@@ -31,12 +31,20 @@ void QuickNetApp::Run() noexcept
 {
     while (true)
     {
-        // TODO: discuss number of connections
-        socket->Listen(20);
-        
-        // TODO: make it in new thread
-        Server server(socket->Accept());
-        server.Serve();
+        try 
+        {
+            // TODO: discuss number of connections
+            socket->Listen(20);
+            
+            // TODO: make it in new thread
+            Server server(socket->Accept());
+            server.Serve();
+        }
+        // TODO: add better logging and exceptions handling
+        catch (...)
+        {
+            std::cout << date::GMTDateTime() << ": " << "Cauht unkown exception" << std::endl;
+        }
     }
 }
 

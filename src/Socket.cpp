@@ -17,17 +17,20 @@ Socket::Socket(string host, string service, SocketType type, SocketUse use)
     // address
     res = GetAddrInfo(host, service);
     assert(res != nullptr);
-    freeaddrinfo(res);
-
+    
     // file descriptor 
     fd = GetAndConnectFD(res);
+    freeaddrinfo(res);
     assert(fd != -1);
-    isConnected = true;
-
+    
     // peer 
     if (use == toConnect) 
+    {
         GetPeer(peer, peerLen);
-    assert(peer != nullptr);
+        assert(peer != nullptr);
+    }
+    
+    isConnected = true;
 }
 
 Socket::Socket(string portNumber, SocketType type, SocketUse use)
@@ -88,7 +91,7 @@ void Socket::Send(const void* toSend, const int size)
 
     if (use == toBind)
         throw exception();  // TODO
-    assert(peer != nullptr)
+    assert(peer != nullptr);
     if (!isConnected) 
         throw exception(); // TODO
     assert(fd != -1);
@@ -277,7 +280,7 @@ void Socket::GetPeer(sockaddr_storage* &other, socklen_t &len) const
     other = nullptr;
     len = sizeof (sockaddr_storage);
 
-    if (getpeername(fd, (sockaddr*)other, &len) != 0) 
+    if (getpeername(fd, (sockaddr*)other, &len) != 0) // BUG: doesn't work with toServe socket after accepting connection
         throw exception(); // TODO
 
     assert(other != nullptr);

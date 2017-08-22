@@ -6,6 +6,9 @@
 #include "Socket.h"
 #include "Server.h"
 
+#include <iostream>
+#include "utility/Date.h"
+
 struct OptionsPackage
 {
     std::string host;
