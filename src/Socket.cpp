@@ -15,7 +15,8 @@ Socket::Socket(string host, string service, SocketType type, SocketUse use)
     assert(fd != -1);
 
     isConnected = true;
-    GetPeer(peer, peerLen);
+    if (use != toBind)
+        GetPeer(peer, peerLen);
 
     freeaddrinfo(res);
 }
@@ -233,7 +234,6 @@ FileDescriptor Socket::GetAndConnectFD(addrinfo* res) const
 
         close(sfd);
     }
-    freeaddrinfo(res);
 
     if (p == nullptr)
         throw exception(); // TODO

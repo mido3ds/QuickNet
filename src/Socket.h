@@ -26,7 +26,7 @@ enum SocketUse
 {
     toConnect,
     toBind,
-    toServe
+    toServe // TODO: wtf is this?
 };
 
 using FileDescriptor = int;
