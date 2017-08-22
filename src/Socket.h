@@ -104,13 +104,13 @@ public:
 private:
     FileDescriptor fd = -1;
     bool isConnected = false;
-    sockaddr_storage* peer = nullptr;
+    sockaddr_storage peer;
     socklen_t peerLen;
 
     Socket(FileDescriptor fd, SocketType type, SocketUse use);
     addrinfo* GetAddrInfo(std::string host, std::string service) const;
     FileDescriptor GetAndConnectFD(addrinfo* res) const;
-    void GetPeer(sockaddr_storage* &other, socklen_t &len) const;
+    void GetPeer(sockaddr_storage &other, socklen_t &len) const;
 };
 
 #endif  /* __Socket_h__ */

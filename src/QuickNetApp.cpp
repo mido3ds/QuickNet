@@ -43,7 +43,7 @@ void QuickNetApp::Run() noexcept
         // TODO: add better logging and exceptions handling
         catch (...)
         {
-            std::cout << date::GMTDateTime() << ": " << "Cauht unkown exception" << std::endl;
+            std::cout << date::GMTDateTime() << ": " << "Cauht unkown exception #" << errno << ", " << std::strerror(errno) << std::endl;
         }
     }
 }

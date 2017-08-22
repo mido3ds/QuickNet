@@ -25,10 +25,7 @@ Socket::Socket(string host, string service, SocketType type, SocketUse use)
     
     // peer 
     if (use == toConnect) 
-    {
         GetPeer(peer, peerLen);
-        assert(peer != nullptr);
-    }
     
     isConnected = true;
 }
@@ -91,14 +88,13 @@ void Socket::Send(const void* toSend, const int size)
 
     if (use == toBind)
         throw exception();  // TODO
-    assert(peer != nullptr);
     if (!isConnected) 
         throw exception(); // TODO
     assert(fd != -1);
 
     while (bytesSent < size)
     {
-        n = sendto(fd, buffer+bytesSent, size-bytesSent, flags, (sockaddr*)peer, peerLen);
+        n = sendto(fd, buffer+bytesSent, size-bytesSent, flags, (sockaddr*)&peer, peerLen);
 
         if (n == -1)
             throw exception(); // TODO
@@ -145,7 +141,7 @@ string Socket::Receive(const unsigned int timeOut, const unsigned int chunkSize)
         memset(chunk, 0, chunkSize); 
 
         // received successfully
-        if ((sizeRecvd = recvfrom(fd, chunk, chunkSize-1, flags, (sockaddr*)peer, &peerLen)) > 0)
+        if ((sizeRecvd = recvfrom(fd, chunk, chunkSize-1, flags, (sockaddr*)&peer, &peerLen)) > 0)
             totalSize += sizeRecvd;
         // connection closed [only TCP]
         else if (sizeRecvd == 0 && type == TCP)
@@ -174,7 +170,6 @@ void Socket::Close()
 
     close(fd);
     fd = -1;
-    peer = nullptr;
     isConnected = false;
 }
 
@@ -272,18 +267,15 @@ FileDescriptor Socket::GetAndConnectFD(addrinfo* res) const
     return sfd;
 }
 
-void Socket::GetPeer(sockaddr_storage* &other, socklen_t &len) const
+void Socket::GetPeer(sockaddr_storage &other, socklen_t &len) const
 {
     assert(use != toBind);
     assert(fd != -1);
 
-    other = nullptr;
     len = sizeof (sockaddr_storage);
 
-    if (getpeername(fd, (sockaddr*)other, &len) != 0) // BUG: doesn't work with toServe socket after accepting connection
+    if (getpeername(fd, (sockaddr*)&other, &len) != 0)
         throw exception(); // TODO
-
-    assert(other != nullptr);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

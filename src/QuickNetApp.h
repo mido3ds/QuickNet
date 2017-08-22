@@ -7,6 +7,8 @@
 #include "Server.h"
 
 #include <iostream>
+#include <cstring>
+#include <cerrno>
 #include "utility/Date.h"
 
 struct OptionsPackage
