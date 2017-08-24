@@ -17,6 +17,10 @@ QuickNetApp::QuickNetApp(OptionsPackage pack)
 inline void QuickNetApp::ConstructorHelper(OptionsPackage pack)
 {
     socket = new Socket(pack.host, pack.port, TCP, toBind);
+    options = pack;
+
+    if (options.host == "")
+        options.host = "localhost";
 }
 
 QuickNetApp::~QuickNetApp()
@@ -29,23 +33,30 @@ QuickNetApp::~QuickNetApp()
 
 void QuickNetApp::Run() noexcept
 {
+    socket->Listen(numbOfConnections);
+
+    std::cout << date::GMTDateTime() << ": Server started listening at " 
+            << "[" << options.host << ":" << options.port << "]"
+            << std::endl;
+            
     while (true)
     {
         try 
         {
-            // TODO: discuss number of connections
-            socket->Listen(20);
-            
+            Socket newClient = socket->Accept();
+
             // TODO: make it in new thread
-            Server server(socket->Accept());
-            server.Serve();
+            Server(newClient).Serve();
         }
         // TODO: add better logging and exceptions handling
         catch (...)
         {
-            std::cout << date::GMTDateTime() << ": " << "Cauht unkown exception #" << errno << ", " << std::strerror(errno) << std::endl;
+            std::cout << date::GMTDateTime() << ": Caught unkown exception #" << errno << ", " << std::strerror(errno) << std::endl;
         }
     }
+
+    // TODO: you know you will never get here, right?
+    std::cout << date::GMTDateTime() << ": Server stopped" << std::endl;
 }
 
 ///////////////////////////////////////////////////////////////////////////

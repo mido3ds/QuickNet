@@ -31,6 +31,8 @@ private:
     inline void ConstructorHelper(OptionsPackage pack);
 
     Socket* socket;
+    OptionsPackage options;
+    int numbOfConnections = 20;
 };
 
 #endif  /* __QuickNetApp_h__ */

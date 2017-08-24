@@ -54,6 +54,8 @@ void Socket::Listen(unsigned int maxNumberOfCon)
 {
     if (use != toBind)
         throw exception();  // TODO
+    if (type != TCP)
+        throw exception();  // TODO
     if (!isConnected)
         throw exception();  // TODO
     assert(fd != -1);

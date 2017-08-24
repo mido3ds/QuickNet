@@ -57,23 +57,21 @@ public:
     Socket(const Socket&);
     ~Socket();
 
-    /** blocks execution untill there is a connection
-     *  used only with `toBind` socket
-     *  throws exception if socket is closed
-     *  @maxNumberOfCon: maximum number of connections that can be listened to at same time
+    /** prepares queue of `maxNumberOfCon` of connections
+     *  call it only once
+     *  used only with `toBind` TCP sockets
+     *  @maxNumberOfCon: maximum number of connections that can be queued
      */
     void Listen(unsigned int maxNumberOfCon);
 
     /** deques next connection to `toBind` only sockets
      *  if socket is a blocking socket, it blocks execution until there is a connection in the queue
-     *  throws exception if socket is closed
      *  returns a `toServe` connected socket that can send/receive
      */
     Socket Accept();
 
     /** sends buffer to peer 
      *  must be non-`toBind` socket 
-     *  throws exception if socket is closed
      */
     void Send(const void* buffer, const int size);
 
