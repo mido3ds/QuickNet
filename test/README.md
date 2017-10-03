@@ -1,3 +1,5 @@
 using CPUnit for testing
 
-download at http://cpunit.sourceforge.net
+More info http://cpunit.sourceforge.net
+
+> For first time, run `CPUnit/build_cpunit`.

@@ -1,0 +1,2 @@
+# compiles tests 
+g++ -g -O0 *.cpp -o run_tests -LCPUnit/lib -ICPUnit/src -lCPUnit $*

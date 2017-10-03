@@ -12,8 +12,11 @@ EXEC = exec.out
 compile: 
 	$(CC) $(SOURCE) $(CC_FLAGS)
 
+test:
+	./test/build_tests && ./test/run_tests || echo Error
+
 main:
-	make compile && $(CC) -std=c++$(CPP_VER) *.o $(MAIN) -I src/ -o $(EXEC)
+	$(CC) -std=c++$(CPP_VER) *.o $(MAIN) -I src/ -o $(EXEC)
 
 run: 
 	./$(EXEC)
