@@ -1,6 +1,13 @@
 # QuickNet
-modern c++11 web framework, simple and fast
+Modern C++11 Web Framework, simple and fast.
 
 [Documentation](/docs/README.md)
 
-read [Roadmap](/Roadmap.md) to get an idea about the next version
+Read [Roadmap](/Roadmap.md) to get an idea about the next version
+
+## Testing
+Using CPUnit for testing
+
+More info http://cpunit.sourceforge.net
+
+> First run `CPUnit/build_cpunit`.

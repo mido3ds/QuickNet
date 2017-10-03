@@ -13,7 +13,7 @@ compile:
 	$(CC) $(SOURCE) $(CC_FLAGS)
 
 test:
-	./test/build_tests && ./test/run_tests || echo Error
+	cd test && g++ -g -O0 ./*.cpp ./http/*.cpp ./http/responder/*.cpp -o run_tests -LCPUnit/lib -ICPUnit/src -I../src -lCPUnit $* && ./run_tests || echo Error
 
 main:
 	$(CC) -std=c++$(CPP_VER) *.o $(MAIN) -I src/ -o $(EXEC)
