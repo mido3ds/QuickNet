@@ -13,7 +13,7 @@ compile:
 	$(CC) $(SOURCE) $(CC_FLAGS)
 
 test:
-	cd test && g++ -g -O0 ./*.cpp ./http/*.cpp ./http/responder/*.cpp -o run_tests -LCPUnit/lib -ICPUnit/src -I../src -lCPUnit $* && ./run_tests || echo Error
+	echo '> Compiling Tests... Please make sure src is compiled, or run `make compile`' && cd test && g++ -std=c++$(CPP_VER) -g -O0 ./*.cpp ./http/*.cpp ./http/responder/*.cpp ../*.o -o run_tests -LCPUnit/lib -ICPUnit/src -I../src -lCPUnit $* && echo '> Running Tests...' && ./run_tests || echo '> Error Occurred'
 
 main:
 	$(CC) -std=c++$(CPP_VER) *.o $(MAIN) -I src/ -o $(EXEC)
