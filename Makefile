@@ -5,16 +5,16 @@
 all: cmake build run
 
 cmake:
-	cmake -G"Visual Studio 14 2015 Win64" -H. -B"C:/Users/Mahmoud/Practice/QuickNet/build" || echo ">>>> cmake initialization failed! <<<<<"
+	cmake -H. -B"/mnt/c/Users/Mahmoud/Practice/QuickNet/build" || echo ">>>> cmake initialization failed! <<<<<"
 
 build:
-	cmake --build "C:/Users/Mahmoud/Practice/QuickNet/build" || echo ">>>> build failed! <<<<<"
+	cmake --build "/mnt/c/Users/Mahmoud/Practice/QuickNet/build" || echo ">>>> build failed! <<<<<"
 
 run:
-	"C:/Users/Mahmoud/Practice/QuickNet/build/QuickNet/Debug/QuickNet.exe"
+	"/mnt/c/Users/Mahmoud/Practice/QuickNet/build/QuickNet/QuickNet" 5000
 
 clean:
-	cmake --build "C:/Users/Mahmoud/Practice/QuickNet/build" --target clean || echo ">>>> clean failed! <<<<<"
+	cmake --build "/mnt/c/Users/Mahmoud/Practice/QuickNet/build" --target clean || echo ">>>> clean failed! <<<<<"
 
 cleanAll:
 		del Makefile && rd /s /q build && rd /s /q CMakeFiles || rm -rf build CMakeFiles Makefile
