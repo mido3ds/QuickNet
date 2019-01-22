@@ -1,25 +1,20 @@
-CC = g++
-CPP_VER = 11
-CC_FLAGS = -g
-CC_FLAGS += -std=c++$(CPP_VER)
-CC_FLAGS += -c
+# auto-generated makefile
 
-MAIN=examples/*.cpp
+.PHONY: all cmake build run
 
-SOURCE = src/*.cpp src/http/*.cpp src/http/responder/*.cpp
-EXEC = exec.out
+all: cmake build run
 
-compile: 
-	$(CC) $(SOURCE) $(CC_FLAGS)
+cmake:
+	cmake -G"Visual Studio 14 2015 Win64" -H. -B"C:/Users/Mahmoud/Practice/QuickNet/build" || echo ">>>> cmake initialization failed! <<<<<"
 
-test:
-	echo '> Compiling Tests... Please make sure src is compiled, or run `make compile`' && cd test && g++ -std=c++$(CPP_VER) -g -O0 ./*.cpp ./http/*.cpp ./http/responder/*.cpp ../*.o -o run_tests -LCPUnit/lib -ICPUnit/src -I../src -lCPUnit $* && echo '> Running Tests...' && ./run_tests || echo '> Error Occurred'
+build:
+	cmake --build "C:/Users/Mahmoud/Practice/QuickNet/build" || echo ">>>> build failed! <<<<<"
 
-main:
-	$(CC) -std=c++$(CPP_VER) *.o $(MAIN) -I src/ -o $(EXEC)
-
-run: 
-	./$(EXEC)
+run:
+	"C:/Users/Mahmoud/Practice/QuickNet/build/QuickNet/Debug/QuickNet.exe"
 
 clean:
-	rm -f *.o $(EXEC)
+	cmake --build "C:/Users/Mahmoud/Practice/QuickNet/build" --target clean || echo ">>>> clean failed! <<<<<"
+
+cleanAll:
+		del Makefile && rd /s /q build && rd /s /q CMakeFiles || rm -rf build CMakeFiles Makefile
